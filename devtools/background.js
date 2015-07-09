@@ -39,4 +39,4 @@ panels.elements.createSidebarPane("Module", function (sidebar) {
     });
 });
 
-var pinspector = panels.create("Pinspector", "img/angular.png", "panel/app.html");
+var pinspector = panels.create("Pinspector", "img/angular.png", "panelDist/index.html");
