@@ -303,3 +303,7 @@ li .status:empty {
   left: -28px;
   margin-top: 3px;
 }
+
+.module {
+    margin-left: 10px;
+}
