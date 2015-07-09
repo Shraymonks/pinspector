@@ -1,25 +1,21 @@
-'use strict';
-
-var React = require('react/addons');
-
+import React from 'react';
 import ModuleTree from './ModuleTree';
 
 // CSS
-require('normalize.css');
-require('../styles/main.css');
+import 'normalize.css';
+import '../styles/main.css';
 
-var PinspectorApp = React.createClass({
-  render: function() {
+class PinspectorApp extends React.Component {
+  render() {
     return (
       <ModuleTree module={this.props.module} />
     );
   }
-});
+}
 
 function render(app) {
   React.render(<PinspectorApp module={app} />, document.getElementById('content'));
 }
-
 
 chrome.devtools.inspectedWindow.eval(`
   (function getModules(module) {
@@ -41,4 +37,4 @@ chrome.devtools.inspectedWindow.eval(`
     render(response);
 });
 
-module.exports = PinspectorApp;
+export default PinspectorApp;
