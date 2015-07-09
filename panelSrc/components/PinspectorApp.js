@@ -5,16 +5,20 @@ import ModuleTree from './ModuleTree';
 import 'normalize.css';
 import '../styles/main.css';
 
-class PinspectorApp extends React.Component {
-  render() {
-    return (
-      <ModuleTree module={this.props.module} />
-    );
-  }
-}
+var PinspectorApp = React.createClass({
+    render: function() {
+        return (
+            <div className="modules">
+                <ol className="module-tree">
+                    <ModuleTree module={this.props.module}/>
+                </ol>
+            </div>
+        );
+    }
+});
 
 function render(app) {
-  React.render(<PinspectorApp module={app} />, document.getElementById('content'));
+    React.render(<PinspectorApp module={app}/>, document.getElementById('content'));
 }
 
 chrome.devtools.inspectedWindow.eval(`
@@ -32,8 +36,7 @@ chrome.devtools.inspectedWindow.eval(`
           name: module.className,
           children: children
       };
-  })(P.app)`,
-  (response) => {
+  })(P.app)`, (response) => {
     render(response);
 });
 

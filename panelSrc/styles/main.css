@@ -1,3 +1,17 @@
-.module {
-    margin-left: 10px;
+.modules .children {
+    display: none;
+}
+
+.modules .children.expanded {
+    display: block;
+}
+
+.modules .collapse-button {
+    cursor: pointer;
+    margin-left: -8px;
+    position: absolute;
+}
+
+.modules ol {
+    list-style-type: none;
 }
