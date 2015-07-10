@@ -17,7 +17,8 @@ body {
     cursor: pointer;
     font-size: 9px;
     line-height: 18px;
-    margin-left: -10px;
+    margin-left: -5px;
+    margin-top: 5px;
     position: absolute;
 }
 
@@ -30,9 +31,11 @@ body {
     background-color: white;
     border-bottom: 1px solid rgb(240, 240, 240);
     line-height: 18px;
-    padding-left: 3px;
+    margin-left: 10px;
+    padding: 5px 10px;
 }
 
 .modules .parent:hover {
-    background-color: rgba(189, 8, 28, 0.5);
+    background-color: rgba(81, 173, 250, 0.48);
+    cursor: pointer;
 }
