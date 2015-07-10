@@ -5,6 +5,7 @@ import ModelDependentComponent from './ModelDependentComponent';
 import ModuleTree from './ModuleTree';
 import ModuleEdit from './ModuleEdit';
 import SplitPane from './SplitPane';
+import SearchBar from './SearchBar';
 
 // CSS
 import 'normalize.css';
@@ -39,6 +40,7 @@ class PinspectorApp extends ModelDependentComponent {
                                 selectedModule={this.state.selectedModule}
                                 onSelect={this.setSelectedModule.bind(this)} />
                         </ol>
+                        <SearchBar root={document.getElementById('content')}/>
                     </div>
                 }
                 rightPane={
