@@ -32,8 +32,11 @@ chrome.devtools.inspectedWindow.eval(`
               return getModules(child);
           }) : [];
 
+      // Store cid for lookup
+      module.$el.attr('cid', module.cid);
       return {
           name: module.className,
+          cid: module.cid,
           children: children
       };
   })(P.app)`, (response) => {

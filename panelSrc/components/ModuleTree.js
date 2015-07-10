@@ -13,6 +13,22 @@ class ModuleTree extends React.Component {
         this.setState({collapsed: !this.state.collapsed});
     }
 
+    onMouseEnter() {
+        this.toggleSelected(true);
+    }
+
+    onMouseLeave() {
+        this.toggleSelected(false);
+    }
+
+    toggleSelected(focused) {
+        var cid = this.props.module.cid;
+        var fn = 'setSelectedElement(\'' + cid + '\',' + focused + ')';
+        chrome.devtools.inspectedWindow.eval(fn, {
+            useContentScriptContext: true
+        });
+    }
+
     render() {
         var module = this.props.module;
         if (!module) {
@@ -37,7 +53,10 @@ class ModuleTree extends React.Component {
                     <CollapseButton
                         collapsed={this.state.collapsed}
                         click={this.clickCollapse.bind(this)} />
-                    {module.name}
+                    <span onMouseEnter={this.onMouseEnter.bind(this)}
+                          onMouseLeave={this.onMouseLeave.bind(this)} >
+                        {module.name}
+                    </span>
                     <ol className={childrenClassName}>
                         {children}
                     </ol>
@@ -46,7 +65,10 @@ class ModuleTree extends React.Component {
         } else {
             return (
                 <li>
-                    {module.name}
+                    <span onMouseEnter={this.onMouseEnter.bind(this)}
+                          onMouseLeave={this.onMouseLeave.bind(this)} >
+                        {module.name}
+                    </span>
                 </li>
             );
         }

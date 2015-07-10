@@ -1,34 +1,63 @@
-if (document.cookie.indexOf('__ngDebug=true') != -1) {
-  bootstrapHint();
-}
-
-function bootstrapHint () {
-  chrome.runtime.sendMessage('refresh');
-
-  var html = document.getElementsByTagName('html')[0];
-
-  // inject into the application context from the content script context
-  var script = window.document.createElement('script');
-  script.src = chrome.extension.getURL('dist/hint.js');
-
-  window.addEventListener('message', function (evt) {
-    // There's no good way to verify the provenance of the message.
-    // evt.source === window is true for all messages sent from
-    // the main frame. evt.origin is going to be the webpage's origin,
-    // even if the message originated from a chrome:// script you injected.
-
-    // The only thing we can do is see if the message *looks* like something
-    // we would send, cross our fingers, and send it on.
-    // Thus, we check for one of the properties known to be on *all* of our
-    // messages (__fromBatarang === true).
-    var eventData = evt.data;
-    // NOTE: Check for null before checking for the property, since typeof null === 'object'.
-    if (typeof eventData === 'object' && eventData !== null && eventData.hasOwnProperty('__fromBatarang') && eventData.__fromBatarang) {
-      chrome.runtime.sendMessage(eventData);
+/**
+ * Display an overlay on top of the 'selected' element. This function
+ * is called from ModuleTree.js in the panel.
+ *
+ * @param {string} cid The module cid that corresponds to the element
+ * @param {boolean} select Show or hide the overlay
+ */
+function setSelectedElement(cid, select) {
+    if (select) {
+        var element = getElementByCid(cid);
+        if (element) {
+            var box = element.getBoundingClientRect();
+            overlay.style.left = box.left + 'px';
+            overlay.style.top = box.top + 'px';
+            overlay.style.width = box.right - box.left + 'px';
+            overlay.style.height = box.bottom - box.top + 'px';
+            overlay.style.visibility = 'visible';
+        }
+    } else {
+        overlay.style.visibility = 'hidden';
     }
-  });
-
-  html.setAttribute('ng-hint', '');
-
-  html.appendChild(script);
 }
+
+/**
+ * Get the element that corresponds to a given cid. Allow map refreshes
+ * for the case of dynamic content creation.
+ *
+ * @param {string} cid The module cid that corresponds to the element
+ * @return {Node} the corresponding DOM node
+ */
+var cidMap = {};
+function getElementByCid(cid) {
+    if (!cidMap[cid]) {
+        refreshCidMap();
+    }
+    return cidMap[cid];
+}
+
+/**
+ * Walk the entire DOM tree and map each module element to its cid
+ */
+function refreshCidMap() {
+    var elements = document.getElementsByTagName('*');
+    for (var i = 0, n = elements.length; i < n; i++) {
+        var el = elements[i];
+        if (el.hasAttribute('cid')) {
+            cidMap[el.getAttribute('cid')] = el;
+        }
+    }
+}
+
+/**
+ * Create the overlay element and throw it naked on the body
+ */
+var overlay;
+function createOverlay() {
+    overlay = document.createElement('div');
+    overlay.style['backgroundColor'] = 'rgba(81, 173, 250, 0.48)';
+    overlay.style['position'] = 'absolute';
+    overlay.style['zIndex'] = 1000000;
+    document.body.appendChild(overlay);
+}
+createOverlay();

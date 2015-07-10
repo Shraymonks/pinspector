@@ -18,15 +18,9 @@
     {
       "matches": ["<all_urls>"],
       "js": ["inject.js"],
-      "run_at": "document_start"
+      "run_at": "document_end"
     }
   ],
-
-  "background": {
-    "scripts": [
-      "background.js"
-    ]
-  },
 
   "minimum_chrome_version": "21.0.1180.57"
 }
