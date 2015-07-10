@@ -17,8 +17,8 @@ var PinspectorApp = React.createClass({
     }
 });
 
-function render(app) {
-    React.render(<PinspectorApp module={app}/>, document.getElementById('content'));
+function render(module) {
+    React.render(<PinspectorApp module={module}/>, document.getElementById('content'));
 }
 
 chrome.devtools.inspectedWindow.eval(`
@@ -39,8 +39,6 @@ chrome.devtools.inspectedWindow.eval(`
           cid: module.cid,
           children: children
       };
-  })(P.app)`, (response) => {
-    render(response);
-});
+  })(P.app)`, render);
 
 export default PinspectorApp;

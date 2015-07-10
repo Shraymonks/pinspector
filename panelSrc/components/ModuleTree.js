@@ -29,6 +29,10 @@ class ModuleTree extends React.Component {
         });
     }
 
+    onClick() {
+        console.log('clicked ', this.props.module);
+    }
+
     render() {
         var module = this.props.module;
         if (!module) {
@@ -36,42 +40,35 @@ class ModuleTree extends React.Component {
         }
 
         var hasChildren = module.children.length > 0;
-        if (hasChildren) {
-            var children = module.children.map(function(child) {
-                return (
-                    <ModuleTree module={child} />
-                );
-            });
+        var collapseButton = hasChildren ? (
+            <CollapseButton
+                collapsed={this.state.collapsed}
+                click={this.clickCollapse.bind(this)} />
+        ) : null;
 
-            var childrenClassName = 'children';
-            if (!this.state.collapsed) {
-                childrenClassName += ' expanded';
-            }
-
-            return (
-                <li className="parent">
-                    <CollapseButton
-                        collapsed={this.state.collapsed}
-                        click={this.clickCollapse.bind(this)} />
-                    <span onMouseEnter={this.onMouseEnter.bind(this)}
-                          onMouseLeave={this.onMouseLeave.bind(this)} >
-                        {module.name}
-                    </span>
-                    <ol className={childrenClassName}>
-                        {children}
-                    </ol>
-                </li>
-            );
-        } else {
-            return (
-                <li>
-                    <span onMouseEnter={this.onMouseEnter.bind(this)}
-                          onMouseLeave={this.onMouseLeave.bind(this)} >
-                        {module.name}
-                    </span>
-                </li>
-            );
+        var childrenClassName = 'children';
+        if (!this.state.collapsed) {
+            childrenClassName += ' expanded';
         }
+
+        var children = module.children.map(
+            (child) => <ModuleTree module={child} />
+        );
+
+        return (
+            <li>
+                {collapseButton}
+                <div className="parent"
+                     onClick={this.onClick.bind(this)}
+                     onMouseEnter={this.onMouseEnter.bind(this)}
+                     onMouseLeave={this.onMouseLeave.bind(this)}>
+                    {module.name}
+                </div>
+                <ol className={childrenClassName}>
+                    {children}
+                </ol>
+            </li>
+        );
     }
 }
 ModuleTree.propTypes = {

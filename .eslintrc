@@ -15,6 +15,7 @@
     "quotes": [ 1, "single" ],
     "no-undef": false,
     "global-strict": false,
+    "no-console": false,
     "no-extra-semi": 1,
     "no-underscore-dangle": false
   }

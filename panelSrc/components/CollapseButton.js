@@ -2,7 +2,7 @@ import React from 'react';
 
 class CollapseButton extends React.Component {
     render() {
-        var icon = this.props.collapsed ? '>' : 'v';
+        var icon = this.props.collapsed ? '▶' : '▼';
         return (
             <span
                 className="collapse-button"
