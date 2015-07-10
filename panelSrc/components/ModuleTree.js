@@ -31,12 +31,19 @@ class ModuleTree extends React.Component {
 
     onClick() {
         console.log('clicked ', this.props.module);
+        this.props.onSelect(this.props.module);
     }
 
     render() {
         var module = this.props.module;
         if (!module) {
             return null;
+        }
+
+        var parentClassName = 'parent';
+        var selected = module === this.props.selectedModule;
+        if (selected) {
+            parentClassName += ' selected';
         }
 
         var hasChildren = module.children.length > 0;
@@ -52,13 +59,13 @@ class ModuleTree extends React.Component {
         }
 
         var children = module.children.map(
-            (child) => <ModuleTree module={child} />
+            (child) => <ModuleTree {...this.props} module={child}/>
         );
 
         return (
             <li>
                 {collapseButton}
-                <div className="parent"
+                <div className={parentClassName}
                      onClick={this.onClick.bind(this)}
                      onMouseEnter={this.onMouseEnter.bind(this)}
                      onMouseLeave={this.onMouseLeave.bind(this)}>
@@ -72,7 +79,9 @@ class ModuleTree extends React.Component {
     }
 }
 ModuleTree.propTypes = {
-    module: React.PropTypes.object
+    module: React.PropTypes.object,
+    onSelect: React.PropTypes.func,
+    selectedModule: React.PropTypes.object
 };
 
 export default ModuleTree;
