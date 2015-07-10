@@ -4,6 +4,11 @@ body {
     font-size: 12px;
 }
 
+body, html, #content, .split-pane {
+    height: 100%;
+    width: 100%;
+}
+
 .modules .children {
     display: none;
 }
@@ -38,4 +43,29 @@ body {
 .modules .parent:hover {
     background-color: rgba(81, 173, 250, 0.48);
     cursor: pointer;
+}
+
+.left-pane, .separator, .right-pane {
+    float: left;
+    height: 100%;
+    overflow: hidden;
+}
+
+.left-pane, .right-pane {
+    background: #fff;
+}
+
+.separator {
+    cursor: col-resize;
+    user-select: none;
+    width: 8px;
+}
+
+.separator::before {
+    background: #000;
+    content: '';
+    display: block;
+    height: 100%;
+    margin: 0 auto;
+    width: 2px;
 }

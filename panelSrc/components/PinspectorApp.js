@@ -1,21 +1,27 @@
 import React from 'react';
+
 import ModuleTree from './ModuleTree';
+import SplitPane from './SplitPane';
 
 // CSS
 import 'normalize.css';
 import '../styles/main.css';
 
-var PinspectorApp = React.createClass({
-    render: function() {
+class PinspectorApp extends React.Component {
+    render() {
         return (
-            <div className="modules">
-                <ol className="module-tree">
-                    <ModuleTree module={this.props.module}/>
-                </ol>
-            </div>
+            <SplitPane
+                leftPane={
+                    <div className="modules">
+                        <ol className="module-tree">
+                            <ModuleTree module={this.props.module}/>
+                        </ol>
+                    </div>
+                }
+            />
         );
     }
-});
+}
 
 function render(module) {
     React.render(<PinspectorApp module={module}/>, document.getElementById('content'));
