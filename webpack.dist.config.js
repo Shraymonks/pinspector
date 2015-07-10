@@ -16,18 +16,18 @@ module.exports = {
     filename: 'main.js'
   },
 
-  debug: false,
+  debug: true,
   devtool: false,
   entry: './panelSrc/components/PinspectorApp.js',
 
   stats: {
     colors: true,
-    reasons: false
+    reasons: true
   },
 
   plugins: [
     new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin(),
+    // new webpack.optimize.UglifyJsPlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.NoErrorsPlugin()
