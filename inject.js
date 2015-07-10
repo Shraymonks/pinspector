@@ -9,11 +9,13 @@ function setSelectedElement(cid, select) {
     if (select) {
         var element = getElementByCid(cid);
         if (element) {
+            var style = getComputedStyle(element);
             var box = element.getBoundingClientRect();
             overlay.style.left = box.left + 'px';
             overlay.style.top = box.top + 'px';
             overlay.style.width = box.right - box.left + 'px';
             overlay.style.height = box.bottom - box.top + 'px';
+            overlay.style.borderRadius = style['border-radius'];
             overlay.style.visibility = 'visible';
         }
     } else {
