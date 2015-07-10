@@ -47,8 +47,9 @@ body, html, #content, .split-pane {
 
 .left-pane, .separator, .right-pane {
     float: left;
-    height: 100%;
     overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .left-pane, .right-pane {
@@ -57,8 +58,10 @@ body, html, #content, .split-pane {
 
 .separator {
     cursor: col-resize;
-    user-select: none;
+    height: 100%;
+    position: fixed;
     width: 8px;
+    top: 0;
 }
 
 .separator::before {

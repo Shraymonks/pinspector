@@ -30,14 +30,18 @@ class SplitPane extends React.Component {
             width: this.state.leftWidth + 'px'
         };
 
+        let separatorStyle = {
+            left: this.state.leftWidth + 'px'
+        };
+
         let rightStyle = {
-            width: 'calc(100% - 8px - ' + this.state.leftWidth + 'px)'
+            width: 'calc(100% - ' + this.state.leftWidth + 'px)'
         };
 
         return (
             <div className="split-pane">
                 <div className="left-pane" style={leftStyle}>{this.props.leftPane}</div>
-                <div className="separator" onMouseDown={this.mouseDown}></div>
+                <div className="separator" onMouseDown={this.mouseDown} style={separatorStyle}></div>
                 <div className="right-pane" ref="right" style={rightStyle}>{this.props.rightPane}</div>
             </div>
         );
