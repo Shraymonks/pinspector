@@ -28,23 +28,23 @@ function render(module) {
 }
 
 chrome.devtools.inspectedWindow.eval(`
-  (function getModules(module) {
-      if (!module) {
-          return null;
-      }
+    (function getModules(module) {
+        if (!module) {
+            return null;
+        }
 
-      var children = module.children ?
-          module.children.map(function(child) {
-              return getModules(child);
-          }) : [];
+        // Store cid for lookup
+        module.$el.attr('cid', module.cid);
 
-      // Store cid for lookup
-      module.$el.attr('cid', module.cid);
-      return {
-          name: module.className,
-          cid: module.cid,
-          children: children
-      };
+        var children = module.children.map(getModules);
+        // TODO {zack} Find a way to do this better
+        var whitelist = ['cid', 'data', 'options', 'resource', 'extraData', 'extraState'];
+        return Object.keys(module).reduce(function(obj, key) {
+            if (whitelist.indexOf(key) !== -1) {
+                obj[key] = module[key];
+            }
+            return obj;
+        }, { name: module.className, children: children });
   })(P.app)`, render);
 
 export default PinspectorApp;
