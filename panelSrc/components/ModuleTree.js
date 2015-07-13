@@ -57,7 +57,6 @@ class ModuleTree extends React.Component {
             childrenClassName += ' expanded';
         }
 
-        var select = this.props.selectModule;
         var children = module.children.map(
             (child) => <ModuleTree {...this.props} module={child}/>
         );
