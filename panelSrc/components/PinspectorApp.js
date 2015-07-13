@@ -15,6 +15,13 @@ class PinspectorApp extends ModelDependentComponent {
         super(props, 'selectedModule');
     }
 
+    selectUser() {
+        Model.selectedModule = {
+            name: 'User',
+            data: this.props.user
+        }
+    }
+
     setSelectedModule(module) {
         Model.selectedModule = module;
     }
@@ -24,6 +31,9 @@ class PinspectorApp extends ModelDependentComponent {
             <SplitPane
                 leftPane={
                     <div className="modules">
+                        <div className="parent user" onClick={this.selectUser.bind(this)}>
+                            User
+                        </div>
                         <ol className="module-tree">
                             <ModuleTree module={this.props.rootModule}
                                 selectedModule={this.state.selectedModule}
@@ -46,37 +56,42 @@ PinspectorApp.propTypes = {
     rootModule: React.PropTypes.object.isRequired
 };
 
-function render(module) {
+function render(options) {
     React.render(
-        <PinspectorApp rootModule={module}/>,
+        <PinspectorApp rootModule={options.module} user={options.user}/>,
         document.getElementById('content')
     );
 }
 
 chrome.devtools.inspectedWindow.eval(`
-    (function getModules(module) {
-        if (!module) {
-            return null;
+    (function(P) {
+        if (!P.app) { return null; }
+
+        function getModules(module) {
+            // Store cid for lookup
+            module.$el.attr('cid', module.cid);
+
+            var children = module.children.map(getModules);
+            // TODO {zack} Find a way to do this better
+            var whitelist = ['cid', 'data', 'options', 'resource', 'extraData', 'extraState'];
+            var mod = Object.keys(module).reduce(function(obj, key) {
+                if (whitelist.indexOf(key) !== -1) {
+                    obj[key] = module[key];
+                }
+                return obj;
+            }, { name: module.className, children: children });
+            return JSON.parse(JSON.stringify(mod, function(property, value) {
+                if (value instanceof jQuery) {
+                    return '<jQuery object>';
+                }
+                return value;
+            }));
         }
 
-        // Store cid for lookup
-        module.$el.attr('cid', module.cid);
-
-        var children = module.children.map(getModules);
-        // TODO {zack} Find a way to do this better
-        var whitelist = ['cid', 'data', 'options', 'resource', 'extraData', 'extraState'];
-        var mod = Object.keys(module).reduce(function(obj, key) {
-            if (whitelist.indexOf(key) !== -1) {
-                obj[key] = module[key];
-            }
-            return obj;
-        }, { name: module.className, children: children });
-        return JSON.parse(JSON.stringify(mod, function(property, value) {
-            if (value instanceof jQuery) {
-                return '<jQuery object>';
-            }
-            return value;
-        }));
-  })(P.app)`, render);
+        return {
+            module: getModules(P.app),
+            user: P.currentUser
+        }
+  })(P)`, render);
 
 export default PinspectorApp;
