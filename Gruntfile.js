@@ -23,7 +23,7 @@ module.exports = function (grunt) {
         cache: false
       }
     },
-    
+
     watch: {
       files: ['panelSrc/**/*.js', 'panelSrc/**/*.css'],
       tasks: ['build']
@@ -85,7 +85,13 @@ module.exports = function (grunt) {
           {
             flatten: true,
             expand: true,
-            src: ['<%= pkg.src %>/*'],
+            src: [
+                '<%= pkg.src %>/*',
+                'node_modules/react-codemirror/node_modules/codemirror/lib/codemirror.css',
+                'node_modules/react-codemirror/node_modules/codemirror/lib/codemirror.js',
+                'node_modules/react-codemirror/node_modules/codemirror/addon/edit/*.js',
+                'node_modules/react-codemirror/node_modules/codemirror/mode/javascript/javascript.js'
+            ],
             dest: '<%= pkg.dist %>/',
             filter: 'isFile'
           },

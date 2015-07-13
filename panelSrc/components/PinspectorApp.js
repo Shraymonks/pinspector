@@ -43,9 +43,7 @@ class PinspectorApp extends ModelDependentComponent {
                 }
                 rightPane={
                     <div className="module-edit">
-                        <ModuleEdit
-                            module={this.state.selectedModule}
-                        />
+                        <ModuleEdit module={this.state.selectedModule} />
                     </div>
                 }
             />
