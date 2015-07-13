@@ -65,12 +65,18 @@ chrome.devtools.inspectedWindow.eval(`
         var children = module.children.map(getModules);
         // TODO {zack} Find a way to do this better
         var whitelist = ['cid', 'data', 'options', 'resource', 'extraData', 'extraState'];
-        return Object.keys(module).reduce(function(obj, key) {
+        var mod = Object.keys(module).reduce(function(obj, key) {
             if (whitelist.indexOf(key) !== -1) {
                 obj[key] = module[key];
             }
             return obj;
         }, { name: module.className, children: children });
+        return JSON.parse(JSON.stringify(mod, function(property, value) {
+            if (value instanceof jQuery) {
+                return '<jQuery object>';
+            }
+            return value;
+        }));
   })(P.app)`, render);
 
 export default PinspectorApp;
