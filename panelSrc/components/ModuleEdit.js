@@ -59,6 +59,7 @@ class ModuleEdit extends React.Component {
 
         var fields = Object.keys(this.fields).map((key) => {
             var value = this.fields[key];
+            if (!value) return null;
             return (
                 <div>
                     <label>{key}</label>
