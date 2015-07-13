@@ -88,6 +88,9 @@ module.exports = function (grunt) {
             src: [
                 '<%= pkg.src %>/*',
                 'node_modules/react-codemirror/node_modules/codemirror/lib/codemirror.css',
+                'node_modules/react-codemirror/node_modules/codemirror/lib/codemirror.js',
+                'node_modules/react-codemirror/node_modules/codemirror/addon/edit/*.js',
+                'node_modules/react-codemirror/node_modules/codemirror/mode/javascript/javascript.js'
             ],
             dest: '<%= pkg.dist %>/',
             filter: 'isFile'

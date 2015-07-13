@@ -49,7 +49,12 @@ class ModuleEdit extends React.Component {
 
     render() {
         var options = {
-            lineNumbers: true
+            lineNumbers: true,
+            matchBrackets: true,
+            mode: {
+                name: 'javascript',
+                json: true
+            }
         };
 
         var fieldEditors = EDITABLES.map((field) => (
