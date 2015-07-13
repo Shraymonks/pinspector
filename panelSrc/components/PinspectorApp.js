@@ -3,6 +3,7 @@ import React from 'react';
 import Model from './Model';
 import ModelDependentComponent from './ModelDependentComponent';
 import ModuleTree from './ModuleTree';
+import ModuleEdit from './ModuleEdit';
 import SplitPane from './SplitPane';
 
 // CSS
@@ -28,6 +29,13 @@ class PinspectorApp extends ModelDependentComponent {
                                 selectedModule={this.state.selectedModule}
                                 onSelect={this.setSelectedModule.bind(this)} />
                         </ol>
+                    </div>
+                }
+                rightPane={
+                    <div className="module-edit">
+                        <ModuleEdit
+                            module={this.state.selectedModule}
+                        />
                     </div>
                 }
             />

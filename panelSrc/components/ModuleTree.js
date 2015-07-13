@@ -30,7 +30,6 @@ class ModuleTree extends React.Component {
     }
 
     onClick() {
-        console.log('clicked ', this.props.module);
         this.props.onSelect(this.props.module);
     }
 
