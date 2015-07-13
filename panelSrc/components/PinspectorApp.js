@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Model from './Model';
+import ModelDependentComponent from './ModelDependentComponent';
 import ModuleTree from './ModuleTree';
 import SplitPane from './SplitPane';
 
@@ -7,17 +9,13 @@ import SplitPane from './SplitPane';
 import 'normalize.css';
 import '../styles/main.css';
 
-class PinspectorApp extends React.Component {
+class PinspectorApp extends ModelDependentComponent {
     constructor(props) {
-        super(props);
-        this.state = {
-            selectedModule: this.props.rootModule,
-            selectedElement: null
-        };
+        super(props, 'selectedModule');
     }
 
-    setSelectedModule(selectedModule) {
-        this.setState({selectedModule});
+    setSelectedModule(module) {
+        Model.selectedModule = module;
     }
 
     render() {
