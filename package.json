@@ -10,8 +10,9 @@
   "mainInput": "PinspectorApp",
   "mainOutput": "main",
   "dependencies": {
+    "normalize.css": "~3.0.3",
     "react": "0.13.x",
-    "normalize.css": "~3.0.3"
+    "react-codemirror": "^0.1.2"
   },
   "devDependencies": {
     "babel": "^5.0.0",

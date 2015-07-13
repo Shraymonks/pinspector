@@ -17,7 +17,7 @@ module.exports = {
   },
 
   debug: true,
-  devtool: false,
+  devtool: 'sourcemap',
   entry: './panelSrc/components/PinspectorApp.js',
 
   stats: {

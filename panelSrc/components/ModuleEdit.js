@@ -1,77 +1,74 @@
-import CollapseButton from './CollapseButton';
 import React from 'react';
+import Codemirror from 'react-codemirror';
+
+const EDITABLES = ['data', 'resource', 'options', 'extraData'];
 
 class ModuleEdit extends React.Component {
     constructor(props) {
         super(props);
-        this.onChange = this.onChange.bind(this);
+        this.state = {};
+        EDITABLES.forEach((field) => {
+            this.state[field] = props.module ?
+                JSON.stringify(props.module[field], null, 2) : 'no module selected';
+        });
     }
-    
+
+    componentWillReceiveProps(props) {
+        EDITABLES.forEach((field) => {
+            this.setState({[field]: props.module ?
+                JSON.stringify(props.module[field], null, 2) : 'no module selected'
+            });
+        });
+    }
+
+    onChange(field) {
+        return (nextValue) => this.setState({[field]: nextValue});
+    }
+
     save() {
-        var val = this.sanitize(this.fields);
-        if (val) {
-            var fn = 'render(\'' + module.cid + '\',\'' + val + '\')';
-            chrome.devtools.inspectedWindow.eval(fn, {
-                useContentScriptContext: true
-            });
-        }
-    }
+        // all fields must be valid JSON
+        var parseable = EDITABLES.every((field) => {
+            try {
+                JSON.parse(this.state[field]);
+            } catch(e) {
+                return false;
+            }
+            return true;
+        });
 
-    sanitize(fields) {
-        try {
-            Object.keys(fields).forEach(function(key) {
-                JSON.parse(fields[key]);
-            });
-            return JSON.stringify(fields);
-        } catch(e) {
-            // Invalid JSON object
-            return null;
-        }
-    }
+        var fields = {};
+        EDITABLES.forEach((field) => {
+            fields[field] = this.state[field];
+        });
 
-    prettyPrint(obj) {
-        return JSON.stringify(obj);
-    }
-
-    onChange(e) {
-        var key = e.target.getAttribute('data-key')
-        this.fields[key] = e.target.value;
-        this.forceUpdate();
-    }
-
-    componentWillUpdate(props, state) {
-        var module = this.props.module
-        if (!module || module.cid !== props.module.cid) {
-            this.fields = {};
-
-            var editables = ['data', 'resource', 'options', 'extraData'];
-            editables.forEach((key) => {
-                this.fields[key] = this.prettyPrint(props.module[key]);
-            });
-        }
+        var fn = `render('${module.cid}', ${fields})`;
+        chrome.devtools.inspectedWindow.eval(fn, {
+            useContentScriptContext: true
+        });
     }
 
     render() {
-        var module = this.props.module;
-        if (!module) {
-            return null;
-        }
+        var options = {
+            lineNumbers: true
+        };
 
-        var fields = Object.keys(this.fields).map((key) => {
-            var value = this.fields[key];
-            if (!value) return null;
-            return (
-                <div>
-                    <label>{key}</label>
-                    <textarea value={value} onChange={this.onChange} data-key={key}></textarea>
-                </div>
-            )
-        });
+        var fieldEditors = EDITABLES.map((field) => (
+            <div>
+                <label>{field}</label>
+                <Codemirror
+                    value={this.state[field]}
+                    onChange={this.onChange(field)}
+                    options={options}
+                />
+            </div>
+        ));
 
         return (
             <div>
                 <header className="title">{module.name}</header>
-                <div className="content">{fields}</div>
+                <div className="content">
+                    {fieldEditors}
+                </div>
                 <button className="save">Save</button>
             </div>
         );
