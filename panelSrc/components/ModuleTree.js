@@ -30,7 +30,6 @@ class ModuleTree extends React.Component {
     }
 
     onClick() {
-        console.log('clicked ', this.props.module);
         this.props.onSelect(this.props.module);
     }
 
@@ -58,6 +57,7 @@ class ModuleTree extends React.Component {
             childrenClassName += ' expanded';
         }
 
+        var select = this.props.selectModule;
         var children = module.children.map(
             (child) => <ModuleTree {...this.props} module={child}/>
         );

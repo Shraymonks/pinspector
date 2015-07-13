@@ -59,6 +59,7 @@ body, html, #content, .split-pane {
 .separator {
     cursor: col-resize;
     height: 100%;
+    margin-left: -4px;
     position: fixed;
     width: 8px;
     top: 0;
@@ -76,4 +77,29 @@ body, html, #content, .split-pane {
 .modules .parent.selected {
     box-shadow: inset 0 0 1px rgb(81, 173, 250);
     color: rgb(81, 173, 250);
+}
+
+.module-edit {
+    padding: 15px;
+}
+
+.module-edit header {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 10px auto 15px;
+    text-align: center;
+}
+
+.module-edit textarea {
+    height: 100px;
+    width: 98%;
+}
+
+.module-edit label {
+    font-weight: 600;
+}
+
+.module-edit button {
+    left: 50%;
+    position: relative;
 }
