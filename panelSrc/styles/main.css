@@ -54,6 +54,9 @@ body, html, #content, .split-pane {
 
 .left-pane, .right-pane {
     background: #fff;
+    height: 100%;
+    overflow: scroll;
+    position: relative;
 }
 
 .separator {

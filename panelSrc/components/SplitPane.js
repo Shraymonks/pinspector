@@ -4,7 +4,7 @@ class SplitPane extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {leftWidth: 400};
+        this.state = {leftWidth: 350};
 
         this.mouseDown = this.mouseDown.bind(this);
         this.mouseMove = this.mouseMove.bind(this);
