@@ -45,7 +45,6 @@ body, html, #content, .split-pane {
     cursor: pointer;
 }
 
-<<<<<<< HEAD
 .left-pane, .separator, .right-pane {
     float: left;
     overflow: hidden;
@@ -76,7 +75,8 @@ body, html, #content, .split-pane {
     height: 100%;
     margin: 0 auto;
     width: 2px;
-=======
+}
+
 #toolbar {
     position: fixed;
     bottom: 0px;
@@ -125,7 +125,6 @@ body, html, #content, .split-pane {
     display: inline-block;
     border-radius: 3px;
     cursor: pointer;
->>>>>>> set up searchbar
 }
 
 .modules .parent.selected {
