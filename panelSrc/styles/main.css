@@ -45,6 +45,10 @@ body, html, #content, .split-pane {
     cursor: pointer;
 }
 
+.modules .parent span {
+    background-color: yellow;
+}
+
 .left-pane, .separator, .right-pane {
     float: left;
     overflow: hidden;
@@ -87,6 +91,7 @@ body, html, #content, .split-pane {
     border-top: 1px solid #e9e9e9;
     font-family: "Helvetica Neue", "Helvetica", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", arial, sans-serif;
     padding: 2px;
+    z-index: 1;
 }
 
 #search-control {

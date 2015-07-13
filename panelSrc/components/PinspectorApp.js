@@ -40,7 +40,7 @@ class PinspectorApp extends ModelDependentComponent {
                                 selectedModule={this.state.selectedModule}
                                 onSelect={this.setSelectedModule.bind(this)} />
                         </ol>
-                        <SearchBar root={document.getElementById('content')}/>
+                        <SearchBar root={document.querySelectorAll(".parent")}/>
                     </div>
                 }
                 rightPane={
