@@ -26,10 +26,6 @@ class PinspectorApp extends ModelDependentComponent {
         }
     }
 
-    setSelectedModule(module) {
-        Model.selectedModule = module;
-    }
-
     render() {
         return (
             <div className="fill">

@@ -47,7 +47,8 @@ class ModuleTree extends ModelDependentComponent {
         }
 
         var prevState = this.state;
-        if (prevProps.module === prevState.selectedModule || nextProps.module === nextState.selectedModule) {
+        if (prevProps.module === prevState.selectedModule ||
+            nextProps.module === nextState.selectedModule) {
             return true;
         }
 
