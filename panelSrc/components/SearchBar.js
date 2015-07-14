@@ -40,6 +40,11 @@ class SearchBar extends React.Component {
                         placeholder="Find"
                         onKeyUp={this.debounce(this.onKeyUp.bind(this), 100)}
                     />
+                    <label id="search-matches" for="search-input">1 of 89</label>
+                    <div className="search-nav-controls">
+                        <div className="search-nav search-nav-prev"></div>
+                        <div className="search-nav search-nav-next"></div>
+                    </div>
                 </span>
             </div>
         );
