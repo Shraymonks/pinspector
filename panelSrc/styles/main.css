@@ -26,9 +26,7 @@ body, html, .fill, #content {
 .modules .collapse-button {
     color: rgb(110, 110, 110);
     cursor: pointer;
-    font-size: 9px;
     line-height: 18px;
-    margin-left: -5px;
     margin-top: 5px;
     position: absolute;
 }
