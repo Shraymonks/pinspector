@@ -3,20 +3,23 @@ import React from 'react';
 import Model from './Model';
 
 class ModelDependentComponent extends React.Component {
-    constructor(props, key) {
+    constructor(props, ...keys) {
         super(props);
         this.state = {
             _model_callback: null,
-            _model_key: key,
-            [key]: Model[key]
+            _model_keys: keys
         };
+        keys.forEach((key) => this.state[key] = Model[key]);
     }
 
     _fetchState() {
-        var key = this.state._model_key;
-        this.setState({
-            [key]: Model[key]
-        });
+        var keys = this.state._model_keys;
+        this.setState(keys.reduce(
+            (stateDict, key) => {
+                stateDict[key] = Model[key];
+                return stateDict;
+            }, {}
+        ));
     }
 
     componentDidMount() {

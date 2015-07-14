@@ -13,13 +13,13 @@ import '../styles/main.css';
 
 class PinspectorApp extends ModelDependentComponent {
     constructor(props) {
-        super(props, 'selectedModule');
+        super(props, 'rootModule', 'selectedModule', 'user');
     }
 
     selectUser() {
         Model.selectedModule = {
             name: 'User',
-            data: this.props.user,
+            data: this.state.user,
             resource: null,
             options: null,
             extraData: null
@@ -40,7 +40,7 @@ class PinspectorApp extends ModelDependentComponent {
                             User
                         </div>
                         <ol className="module-tree">
-                            <ModuleTree module={this.props.rootModule}
+                            <ModuleTree module={this.state.rootModule}
                                 selectedModule={this.state.selectedModule}
                                 onSelect={this.setSelectedModule.bind(this)} />
                         </ol>
@@ -57,15 +57,10 @@ class PinspectorApp extends ModelDependentComponent {
         );
     }
 }
-PinspectorApp.propTypes = {
-    rootModule: React.PropTypes.object.isRequired
-};
 
-function render(options) {
-    React.render(
-        <PinspectorApp rootModule={options.module} user={options.user}/>,
-        document.getElementById('content')
-    );
+function updateModel(options) {
+    Model.rootModule = options.module;
+    Model.user = options.user;
 }
 
 function initialize() {
@@ -98,8 +93,13 @@ function initialize() {
                 module: getModules(P.app),
                 user: P.currentUser
             }
-      })(P)`, render);
+      })(P)`, updateModel);
 }
+
+React.render(
+    <PinspectorApp/>,
+    document.getElementById('content')
+);
 
 /*
  * Reinitialize each time there is a route change or resource (node)
