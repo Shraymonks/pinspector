@@ -26,7 +26,7 @@ class SearchBar extends React.Component {
             var el = this.props.root[i];
             var e = el.innerHTML;
             var en = e.replace(/(<span>|<\/span>)/igm, "");
-            var ne = en.replace(query, "<span>$1</span>");
+            var ne = en.replace(query, `<span class="search-hl">$1</span>`);
             this.props.root[i].innerHTML = ne;
         };
     }

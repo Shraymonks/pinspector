@@ -1,6 +1,8 @@
 import CollapseButton from './CollapseButton';
 import React from 'react/addons';
 
+import ModuleDescriptor from './ModuleDescriptor';
+
 var CSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 class ModuleTree extends React.Component {
@@ -76,6 +78,7 @@ class ModuleTree extends React.Component {
                      onMouseEnter={this.onMouseEnter.bind(this)}
                      onMouseLeave={this.onMouseLeave.bind(this)}>
                     {module.name}
+                    <ModuleDescriptor module={module} />
                 </div>
                 <ol className={childrenClassName}>
                     <CSSTransitionGroup transitionName="module-tree">

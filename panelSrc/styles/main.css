@@ -50,7 +50,17 @@ body, html, .fill, #content {
     cursor: pointer;
 }
 
-.modules .parent span {
+.modules .parent .desc {
+    color: #a11;
+    display: block;
+    font-size: 11px;
+    font-style: italic;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.modules .parent .search-hl {
     background-color: yellow;
 }
 
