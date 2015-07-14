@@ -66,8 +66,9 @@ body, html, .fill, #content {
     height: 3em;
 }
 
-.modules .parent .search-hl {
+.modules .parent em {
     background-color: yellow;
+    font-style: normal;
 }
 
 .module-tree-enter {

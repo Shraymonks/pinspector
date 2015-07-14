@@ -1,6 +1,11 @@
 import React from 'react';
 
 class SearchBar extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { matchcount: 0 };
+    }
+
     debounce(func, wait) {
         var timeout;
         return function() {
@@ -22,13 +27,20 @@ class SearchBar extends React.Component {
 
         var query = new RegExp("(" + evt.target.value + ")", "gim");
 
+        var matches = 0;
         for (var i = 0; i < this.props.root.length; i++) {
-            var el = this.props.root[i];
-            var e = el.innerHTML;
-            var en = e.replace(/(<span>|<\/span>)/igm, "");
-            var ne = en.replace(query, `<span class="search-hl">$1</span>`);
+            let el = this.props.root[i];
+            let e = el.innerHTML;
+
+            let match = e.match(query);
+            matches += match ? match.length : 0;
+
+            let en = e.replace(/(<em>|<\/em>)/igm, "");
+            let ne = en.replace(query, `<em>$1</em>`);
             this.props.root[i].innerHTML = ne;
         };
+
+        this.setState({ matchcount: matches });
     }
 
     render() {
@@ -40,7 +52,9 @@ class SearchBar extends React.Component {
                         placeholder="Find"
                         onKeyUp={this.debounce(this.onKeyUp.bind(this), 100)}
                     />
-                    <label id="search-matches" for="search-input">1 of 89</label>
+                    <label id="search-matches" for="search-input">
+                        1 of {this.state.matchcount}
+                    </label>
                     <div className="search-nav-controls">
                         <div className="search-nav search-nav-prev"></div>
                         <div className="search-nav search-nav-next"></div>
