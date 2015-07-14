@@ -15,6 +15,7 @@ class PinspectorApp extends ModelDependentComponent {
     constructor(props) {
         super(props, 'moduleMap', 'rootModule', 'selectedModule', 'user');
 
+        this.handleTreeAction = this.handleTreeAction.bind(this);
         this.selectModuleFromElement = this.selectModuleFromElement.bind(this);
     }
 
@@ -26,6 +27,7 @@ class PinspectorApp extends ModelDependentComponent {
             options: null,
             extraData: null
         }
+        this.refs.splitPane.open();
     }
 
     selectModuleFromElement() {
@@ -44,29 +46,38 @@ class PinspectorApp extends ModelDependentComponent {
 
     setSelectedModule(cid) {
         Model.selectedModule = Model.moduleMap[cid];
+        this.refs.splitPane.open();
+    }
+
+    handleTreeAction() {
+        this.refs.splitPane.open();
     }
 
     render() {
         return (
             <div className="fill">
-            <SplitPane
-                leftPane={
-                    <div className="modules">
-                        <div className="parent user" onClick={this.selectUser.bind(this)}>
-                            User
+                <SplitPane
+                    leftPane={
+                        <div className="modules">
+                            <div className="parent user" onClick={this.selectUser.bind(this)}>
+                                User
+                            </div>
+                            <ol className="module-tree">
+                                <ModuleTree
+                                    handleAction={this.handleTreeAction}
+                                    module={this.state.rootModule}
+                                />
+                            </ol>
                         </div>
-                        <ol className="module-tree">
-                            <ModuleTree module={this.state.rootModule} />
-                        </ol>
-                    </div>
-                }
-                rightPane={
-                    <div className="module-edit">
-                        <ModuleEdit module={this.state.selectedModule} />
-                    </div>
-                }
-            />
-            <SearchBar root={document.querySelectorAll(".parent")}/>
+                    }
+                    ref="splitPane"
+                    rightPane={
+                        <div className="module-edit">
+                            <ModuleEdit module={this.state.selectedModule} />
+                        </div>
+                    }
+                />
+                <SearchBar root={document.querySelectorAll(".parent")}/>
             </div>
         );
     }
