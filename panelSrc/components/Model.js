@@ -1,10 +1,20 @@
 
 class Model {
     constructor() {
+        this._moduleMap = {};
         this._rootModule = null;
         this._selectedModule = null;
         this._user = null;
         this._subscribers = new Set();
+    }
+
+    get moduleMap() {
+        return this._moduleMap;
+    }
+
+    set moduleMap(moduleMap) {
+        this._moduleMap = moduleMap;
+        this._notify();
     }
 
     get rootModule() {

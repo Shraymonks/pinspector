@@ -13,6 +13,20 @@ class ModuleTree extends ModelDependentComponent {
         this.state.collapsed = false;
     }
 
+    componentDidUpdate() {
+        const {module} = this.props;
+        const {selectedModule} = this.state;
+
+        if ((!module || !selectedModule) || (module.cid !== selectedModule.cid)) return;
+
+        const element = React.findDOMNode(this.refs.module);
+        const rect = element.getBoundingClientRect();
+
+        if (!(rect.top >= 0 && rect.bottom <= window.innerHeight)) {
+            element.scrollIntoView();
+        }
+    }
+
     clickCollapse() {
         this.setState({collapsed: !this.state.collapsed});
     }
@@ -34,7 +48,7 @@ class ModuleTree extends ModelDependentComponent {
     }
 
     onClick() {
-        Model.selectedModule = this.props.module;
+        Model.selectedModule.cid = this.props.module.cid;
     }
 
     /*
@@ -56,13 +70,14 @@ class ModuleTree extends ModelDependentComponent {
     }
 
     render() {
-        var module = this.props.module;
+        const {module} = this.props;
+        const {selectedModule} = this.state;
         if (!module) {
             return null;
         }
 
         var parentClassName = 'parent';
-        var selected = module === this.state.selectedModule;
+        var selected = module.cid === (selectedModule && selectedModule.cid);
         if (selected) {
             parentClassName += ' selected';
         }
@@ -94,7 +109,8 @@ class ModuleTree extends ModelDependentComponent {
                 <div className={parentClassName}
                      onClick={this.onClick.bind(this)}
                      onMouseEnter={this.onMouseEnter.bind(this)}
-                     onMouseLeave={this.onMouseLeave.bind(this)}>
+                     onMouseLeave={this.onMouseLeave.bind(this)}
+                     ref="module">
                     {module.name}
                     <ModuleDescriptor module={module} />
                 </div>
