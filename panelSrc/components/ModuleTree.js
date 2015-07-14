@@ -49,6 +49,7 @@ class ModuleTree extends ModelDependentComponent {
 
     onClick() {
         Model.selectedModule = this.props.module;
+        this.props.handleAction();
     }
 
     /*
@@ -124,6 +125,7 @@ class ModuleTree extends ModelDependentComponent {
     }
 }
 ModuleTree.propTypes = {
+    handleAction: React.PropTypes.func,
     module: React.PropTypes.object,
     onSelect: React.PropTypes.func,
     selectedModule: React.PropTypes.object
