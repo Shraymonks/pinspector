@@ -49,5 +49,4 @@ SearchBar.propTypes = {
     root: React.PropTypes.object
 };
 
-
 export default SearchBar;
