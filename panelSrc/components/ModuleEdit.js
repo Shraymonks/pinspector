@@ -62,7 +62,7 @@ class ModuleEdit extends React.Component {
         };
 
         var fieldEditors = EDITABLES.map((field) => (
-            <div>
+            <div className="field-group">
                 <label>{field}</label>
                 <Codemirror
                     value={this.state[field]}
