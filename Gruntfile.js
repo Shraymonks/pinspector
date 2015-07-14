@@ -96,6 +96,18 @@ module.exports = function (grunt) {
             filter: 'isFile'
           },
           {
+              flatten: true,
+              expand: true,
+              src: ['<%= pkg.src %>/styles/font-awesome.css'],
+              dest: '<%= pkg.dist %>/styles/'
+          },
+          {
+              flatten: true,
+              expand: true,
+              src: ['<%= pkg.src %>/styles/fonts/*'],
+              dest: '<%= pkg.dist %>/fonts/'
+          },
+          {
             flatten: true,
             expand: true,
             src: ['<%= pkg.src %>/images/*'],
