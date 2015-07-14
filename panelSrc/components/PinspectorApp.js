@@ -32,6 +32,7 @@ class PinspectorApp extends ModelDependentComponent {
 
     render() {
         return (
+            <div className="fill">
             <SplitPane
                 leftPane={
                     <div className="modules">
@@ -43,7 +44,6 @@ class PinspectorApp extends ModelDependentComponent {
                                 selectedModule={this.state.selectedModule}
                                 onSelect={this.setSelectedModule.bind(this)} />
                         </ol>
-                        <SearchBar root={document.querySelectorAll(".parent")}/>
                     </div>
                 }
                 rightPane={
@@ -52,6 +52,8 @@ class PinspectorApp extends ModelDependentComponent {
                     </div>
                 }
             />
+            <SearchBar root={document.querySelectorAll(".parent")}/>
+            </div>
         );
     }
 }
