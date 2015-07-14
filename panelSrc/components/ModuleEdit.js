@@ -48,6 +48,10 @@ class ModuleEdit extends React.Component {
     }
 
     render() {
+        var moduleName = 'No Module Selected';
+        if (this.props.module) {
+            moduleName = this.props.module.name;
+        }
         var options = {
             lineNumbers: true,
             matchBrackets: true,
@@ -70,7 +74,7 @@ class ModuleEdit extends React.Component {
 
         return (
             <div>
-                <header className="title">{module.name}</header>
+                <header className="title">{moduleName}</header>
                 <div className="content">
                     {fieldEditors}
                 </div>

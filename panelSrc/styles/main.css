@@ -147,5 +147,5 @@ body, html, #content, .split-pane {
 }
 
 .ReactCodeMirror .CodeMirror {
-    height: 10em;
+    height: auto;
 }

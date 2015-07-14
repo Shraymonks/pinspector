@@ -19,7 +19,10 @@ class PinspectorApp extends ModelDependentComponent {
     selectUser() {
         Model.selectedModule = {
             name: 'User',
-            data: this.props.user
+            data: this.props.user,
+            resource: null,
+            options: null,
+            extraData: null
         }
     }
 
