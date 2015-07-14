@@ -1,5 +1,7 @@
 import CollapseButton from './CollapseButton';
-import React from 'react';
+import React from 'react/addons';
+
+var CSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 class ModuleTree extends React.Component {
     constructor(props) {
@@ -58,8 +60,13 @@ class ModuleTree extends React.Component {
         }
 
         var children = module.children.map(
-            (child) => <ModuleTree {...this.props} module={child}/>
-        );
+            (child, i) => (
+                <ModuleTree
+                    {...this.props}
+                    module={child}
+                    key={`${module.name}-${i}-${child.name}`}
+                />
+        ));
 
         return (
             <li>
@@ -71,7 +78,9 @@ class ModuleTree extends React.Component {
                     {module.name}
                 </div>
                 <ol className={childrenClassName}>
-                    {children}
+                    <CSSTransitionGroup transitionName="module-tree">
+                        {children}
+                    </CSSTransitionGroup>
                 </ol>
             </li>
         );

@@ -54,6 +54,24 @@ body, html, .fill, #content {
     background-color: yellow;
 }
 
+.module-tree-enter {
+    opacity: 0.01;
+    transition: opacity .5s ease-in;
+}
+
+.module-tree-enter.module-tree-enter-active {
+    opacity: 1;
+}
+
+.module-tree-leave {
+    opacity: 1;
+    transition: opacity .5s ease-in;
+}
+
+.module-tree-leave.module-tree-leave-active {
+    opacity: 0.01;
+}
+
 .left-pane, .separator, .right-pane {
     float: left;
     overflow: hidden;
