@@ -13,7 +13,7 @@ import '../styles/main.css';
 
 class PinspectorApp extends ModelDependentComponent {
     constructor(props) {
-        super(props, 'moduleMap', 'rootModule', 'user');
+        super(props, 'moduleMap', 'rootModule', 'selectedModule', 'user');
 
         this.selectModuleFromElement = this.selectModuleFromElement.bind(this);
     }

@@ -48,7 +48,7 @@ class ModuleTree extends ModelDependentComponent {
     }
 
     onClick() {
-        Model.selectedModule.cid = this.props.module.cid;
+        Model.selectedModule = this.props.module;
     }
 
     /*
