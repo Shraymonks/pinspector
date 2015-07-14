@@ -1,16 +1,16 @@
 import CollapseButton from './CollapseButton';
 import React from 'react/addons';
 
+import Model from './Model';
+import ModelDependentComponent from './ModelDependentComponent';
 import ModuleDescriptor from './ModuleDescriptor';
 
 var CSSTransitionGroup = React.addons.CSSTransitionGroup;
 
-class ModuleTree extends React.Component {
+class ModuleTree extends ModelDependentComponent {
     constructor(props) {
-        super(props);
-        this.state = {
-            collapsed: false
-        };
+        super(props, 'selectedModule');
+        this.state.collapsed = false;
     }
 
     clickCollapse() {
@@ -34,7 +34,25 @@ class ModuleTree extends React.Component {
     }
 
     onClick() {
-        this.props.onSelect(this.props.module);
+        Model.selectedModule = this.props.module;
+    }
+
+    /*
+     * only re-render if props change, or we become (un)selected
+     */
+    shouldComponentUpdate(nextProps, nextState) {
+        var prevProps = this.props;
+        if (prevProps.module !== nextProps.module) {
+            return true;
+        }
+
+        var prevState = this.state;
+        if (prevProps.module === prevState.selectedModule ||
+            nextProps.module === nextState.selectedModule) {
+            return true;
+        }
+
+        return false;
     }
 
     render() {
@@ -44,7 +62,7 @@ class ModuleTree extends React.Component {
         }
 
         var parentClassName = 'parent';
-        var selected = module === this.props.selectedModule;
+        var selected = module === this.state.selectedModule;
         if (selected) {
             parentClassName += ' selected';
         }

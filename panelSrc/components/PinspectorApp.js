@@ -13,7 +13,7 @@ import '../styles/main.css';
 
 class PinspectorApp extends ModelDependentComponent {
     constructor(props) {
-        super(props, 'rootModule', 'selectedModule', 'user');
+        super(props, 'rootModule', 'user');
     }
 
     selectUser() {
@@ -26,10 +26,6 @@ class PinspectorApp extends ModelDependentComponent {
         }
     }
 
-    setSelectedModule(module) {
-        Model.selectedModule = module;
-    }
-
     render() {
         return (
             <div className="fill">
@@ -40,9 +36,7 @@ class PinspectorApp extends ModelDependentComponent {
                             User
                         </div>
                         <ol className="module-tree">
-                            <ModuleTree module={this.state.rootModule}
-                                selectedModule={this.state.selectedModule}
-                                onSelect={this.setSelectedModule.bind(this)} />
+                            <ModuleTree module={this.state.rootModule} />
                         </ol>
                     </div>
                 }
