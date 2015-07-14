@@ -39,10 +39,6 @@ panels.elements.createSidebarPane("Module", function (sidebar) {
     });
 });
 
-panels.elements.onSelectionChanged.addListener(function() {
-
-});
-
 panels.create("Pinspector", "img/angular.png", "panelDist/index.html", function(panel) {
     panel.onShown.addListener(function(panelWindow) {
         panelWindow.dispatchEvent(new Event('shown'));
