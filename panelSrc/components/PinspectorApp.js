@@ -13,7 +13,9 @@ import '../styles/main.css';
 
 class PinspectorApp extends ModelDependentComponent {
     constructor(props) {
-        super(props, 'rootModule', 'user');
+        super(props, 'moduleMap', 'rootModule', 'selectedModule', 'user');
+
+        this.selectModuleFromElement = this.selectModuleFromElement.bind(this);
     }
 
     selectUser() {
@@ -24,6 +26,24 @@ class PinspectorApp extends ModelDependentComponent {
             options: null,
             extraData: null
         }
+    }
+
+    selectModuleFromElement() {
+        chrome.devtools.inspectedWindow.eval('getCid($0)', {useContentScriptContext: true}, (cid, exception) => {
+            if (!exception && cid) {
+                this.setSelectedModule(cid);
+            }
+        });
+    }
+
+    componentDidMount() {
+        super.componentDidMount();
+        this.selectModuleFromElement();
+        window.addEventListener('shown', this.selectModuleFromElement);
+    }
+
+    setSelectedModule(cid) {
+        Model.selectedModule = Model.moduleMap[cid];
     }
 
     render() {
@@ -53,6 +73,7 @@ class PinspectorApp extends ModelDependentComponent {
 }
 
 function updateModel(options) {
+    Model.moduleMap = options.moduleMap;
     Model.rootModule = options.module;
     Model.user = options.user;
 }
@@ -62,31 +83,38 @@ function initialize() {
         (function(P) {
             if (!P) { return null; }
 
-            function getModules(module) {
-                // Store cid for lookup
-                module.$el.attr('cid', module.cid);
+        var moduleMap = {};
 
-                var children = module.children.map(getModules);
-                // TODO {zack} Find a way to do this better
-                var whitelist = ['cid', 'data', 'options', 'resource', 'extraData', 'extraState'];
-                var mod = Object.keys(module).reduce(function(obj, key) {
-                    if (whitelist.indexOf(key) !== -1) {
-                        obj[key] = module[key];
-                    }
-                    return obj;
-                }, { name: module.className, children: children });
-                return JSON.parse(JSON.stringify(mod, function(property, value) {
-                    if (value instanceof jQuery) {
-                        return '<jQuery object>';
-                    }
-                    return value;
-                }));
-            }
+        function getModules(module) {
+            // Store cid for lookup
+            module.$el.attr('cid', module.cid);
 
-            return {
-                module: getModules(P.app),
-                user: P.currentUser
-            }
+            var children = module.children.map(getModules);
+            // TODO {zack} Find a way to do this better
+            var whitelist = ['cid', 'data', 'options', 'resource', 'extraData', 'extraState'];
+            var mod = Object.keys(module).reduce(function(obj, key) {
+                if (whitelist.indexOf(key) !== -1) {
+                    obj[key] = module[key];
+                }
+                return obj;
+            }, { name: module.className, children: children });
+            mod =  JSON.parse(JSON.stringify(mod, function(property, value) {
+                if (value instanceof jQuery) {
+                    return '<jQuery object>';
+                }
+                return value;
+            }));
+            moduleMap[mod.cid] = mod;
+            return mod;
+        }
+
+        var module = getModules(P.app);
+
+        return {
+            module: module,
+            moduleMap: moduleMap,
+            user: P.currentUser
+        }
       })(P)`, updateModel);
 }
 

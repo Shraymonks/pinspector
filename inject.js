@@ -51,6 +51,15 @@ function refreshCidMap() {
     }
 }
 
+function getCid(element) {
+    if (!element) return;
+
+    if (element.hasAttribute('cid')) {
+        return element.getAttribute('cid');
+    }
+    return getCid(element.parentNode);
+}
+
 /**
  * Create the overlay element and throw it naked on the body
  */
