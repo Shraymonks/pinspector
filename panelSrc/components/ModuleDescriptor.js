@@ -2,10 +2,19 @@ import React from 'react';
 
 class ModuleDescriptor extends React.Component {
     render() {
-        if (!this.props.module || !this.props.module.options) {
+        var module = this.props.module;
+        if (!module || !module.options) {
             return null;
         }
-        
+
+        if (module.name === 'Pin') {
+            let images = module.data.images;
+            let src = images['136x136'].url;
+            return (
+                <img className="desc-img" src={src} />
+            );
+        }
+
         var {text, alt} = this.props.module.options;
         return (
             <span className="desc">
