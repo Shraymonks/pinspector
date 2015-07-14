@@ -38,7 +38,7 @@ class SearchBar extends React.Component {
                     <input
                         id="search-input"
                         placeholder="Find"
-                        onKeyUp={this.debounce(this.onKeyUp.bind(this), 100).bind(this)}
+                        onKeyUp={this.debounce(this.onKeyUp.bind(this), 100)}
                     />
                 </span>
             </div>
