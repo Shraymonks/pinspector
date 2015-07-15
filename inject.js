@@ -72,3 +72,36 @@ function createOverlay() {
     document.body.appendChild(overlay);
 }
 createOverlay();
+
+console.log('Injected!');
+function addAppChangeListener() {
+    var target = document.querySelector('.App');
+    console.log('App: ', target);
+    var config = {
+        childList: true,
+        subtree: true
+    };
+
+    var observer = new MutationObserver(function(mutations) {
+        console.log('got mutations');
+        mutations.forEach(function(mutation) {
+            console.log(mutation.type);
+        });
+    });
+
+    observer.observe(target, config);
+}
+addAppChangeListener();
+
+chrome.runtime.onConnect.addListener(function(port) {
+  console.log('got port in inject.js', port);
+  port.onMessage.addListener(function(msg) {
+      console.log('got msg ', msg);
+    if (msg.joke == "Knock knock")
+      port.postMessage({question: "Who's there?"});
+    else if (msg.answer == "Madame")
+      port.postMessage({question: "Madame who?"});
+    else if (msg.answer == "Madame... Bovary")
+      port.postMessage({question: "I don't get it."});
+  });
+});

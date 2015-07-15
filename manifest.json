@@ -14,6 +14,11 @@
     "128": "img/webstore-icon.png"
   },
 
+  "background": {
+    "scripts": ["devtools/test.js"],
+    "persistent": false
+  },
+
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -21,6 +26,10 @@
       "run_at": "document_end"
     }
   ],
+
+  "externally_connectable": {
+    "matches": ["*://*.pinterdev.com/*"]
+  },
 
   "minimum_chrome_version": "21.0.1180.57"
 }
