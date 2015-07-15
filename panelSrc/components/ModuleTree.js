@@ -56,18 +56,20 @@ class ModuleTree extends ModelDependentComponent {
      * only re-render if props change, or we become (un)selected
      */
     shouldComponentUpdate(nextProps, nextState) {
-        var prevProps = this.props;
-        if (prevProps.module !== nextProps.module) {
-            return true;
-        }
+        const prevProps = this.props;
+        const prevState = this.state;
 
-        var prevState = this.state;
-        if (prevProps.module === prevState.selectedModule ||
-            nextProps.module === nextState.selectedModule) {
-            return true;
-        }
-
-        return false;
+        return (
+            (prevProps.module !== nextProps.module) ||
+            (prevState.collapsed !== nextState.collapsed) ||
+            (
+                prevState.selectedModule !== nextState.selectedModule &&
+                (
+                    prevProps.module === prevState.selectedModule ||
+                    nextProps.module === nextState.selectedModule
+                )
+            )
+        );
     }
 
     render() {
