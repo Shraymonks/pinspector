@@ -220,6 +220,22 @@ body, html, .fill, #content {
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.33) inset;
 }
 
+.module-edit button:disabled {
+    box-shadow: none !important;
+    text-shadow: 0 0 0 !important;
+    background: #ebebeb !important;
+    border: 1px solid #ddd !important;
+    color: #aaa !important;
+    cursor: default;
+}
+
+.module-edit .parse-msg {
+    color: #717171;
+    display: block;
+    font-style: italic;
+    margin-top: 0.5em;
+}
+
 .ReactCodeMirror {
     border: 1px solid #ccc;;
 }

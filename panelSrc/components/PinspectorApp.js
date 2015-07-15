@@ -1,5 +1,6 @@
 import React from 'react';
 
+import {constructModuleTree} from '../EvalUtils';
 import Model from './Model';
 import ModelDependentComponent from './ModelDependentComponent';
 import ModuleTree from './ModuleTree';
@@ -90,43 +91,7 @@ function updateModel(options) {
 }
 
 function initialize() {
-    chrome.devtools.inspectedWindow.eval(`
-        (function(P) {
-            if (!P) { return null; }
-
-        var moduleMap = {};
-
-        function getModules(module) {
-            // Store cid for lookup
-            module.$el.attr('cid', module.cid);
-
-            var children = module.children.map(getModules);
-            // TODO {zack} Find a way to do this better
-            var whitelist = ['cid', 'data', 'options', 'resource', 'extraData', 'extraState'];
-            var mod = Object.keys(module).reduce(function(obj, key) {
-                if (whitelist.indexOf(key) !== -1) {
-                    obj[key] = module[key];
-                }
-                return obj;
-            }, { name: module.className, children: children });
-            mod =  JSON.parse(JSON.stringify(mod, function(property, value) {
-                if (value instanceof jQuery) {
-                    return '<jQuery object>';
-                }
-                return value;
-            }));
-            moduleMap[mod.cid] = mod;
-            return mod;
-        }
-
-        var module = getModules(P.app);
-
-        return {
-            module: module,
-            moduleMap: moduleMap,
-            user: P.currentUser
-        }
-      })(P)`, updateModel);
+    constructModuleTree(updateModel);
 }
 
 React.render(
@@ -140,11 +105,11 @@ React.render(
  * as SPA route changes. Debounce the resource added otherwise it will
  * be fired like 100+ times...
  */
-var debounced = null;
-chrome.devtools.inspectedWindow.onResourceAdded.addListener(function() {
-    clearTimeout(debounced);
-    debounced = setTimeout(initialize, 50);
-});
+// var debounced = null;
+// chrome.devtools.inspectedWindow.onResourceAdded.addListener(function() {
+//     clearTimeout(debounced);
+//     debounced = setTimeout(initialize, 50);
+// });
 initialize();
 
 export default PinspectorApp;

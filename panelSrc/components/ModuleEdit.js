@@ -1,6 +1,8 @@
 import React from 'react';
 import Codemirror from 'react-codemirror';
 
+import {renderWithNewFields} from '../EvalUtils';
+
 const EDITABLES = ['data', 'resource', 'options', 'extraData'];
 
 class ModuleEdit extends React.Component {
@@ -22,29 +24,28 @@ class ModuleEdit extends React.Component {
     }
 
     onChange(field) {
-        return (nextValue) => this.setState({[field]: nextValue});
+        return (nextValue) => {
+            var parse_msg;
+            try {
+                JSON.parse(nextValue);
+                parse_msg = '';
+            } catch (e) {
+                parse_msg = e.message;
+            }
+            this.setState({
+                [field]: nextValue,
+                [`${field}_parse_msg`]: parse_msg
+            });
+        }
     }
 
     save() {
-        // all fields must be valid JSON
-        var parseable = EDITABLES.every((field) => {
-            try {
-                JSON.parse(this.state[field]);
-            } catch(e) {
-                return false;
-            }
-            return true;
-        });
-
         var fields = {};
         EDITABLES.forEach((field) => {
-            fields[field] = this.state[field];
+            fields[field] = JSON.parse(this.state[field]);
         });
 
-        var fn = `render('${module.cid}', ${fields})`;
-        chrome.devtools.inspectedWindow.eval(fn, {
-            useContentScriptContext: true
-        });
+        renderWithNewFields(this.props.module.cid, fields);
     }
 
     render() {
@@ -61,16 +62,27 @@ class ModuleEdit extends React.Component {
             }
         };
 
-        var fieldEditors = EDITABLES.map((field) => (
-            <div className="field-group">
-                <label>{field}</label>
-                <Codemirror
-                    value={this.state[field]}
-                    onChange={this.onChange(field)}
-                    options={options}
-                />
-            </div>
-        ));
+        var fieldEditors = EDITABLES.map((field) => {
+            var parseMessage = this.state[`${field}_parse_msg`] ? (
+                <span className="parse-msg">
+                    {this.state[`${field}_parse_msg`]}
+                </span>
+            ) : null;
+            return (
+                <div className="field-group">
+                    <label>{field}</label>
+                    <Codemirror
+                        value={this.state[field]}
+                        onChange={this.onChange(field)}
+                        options={options}
+                    />
+                    {parseMessage}
+                </div>
+            );
+        });
+
+        var disabled = EDITABLES.some(
+            (field) => this.state[`${field}_parse_msg`]);
 
         return (
             <div>
@@ -78,7 +90,12 @@ class ModuleEdit extends React.Component {
                 <div className="content">
                     {fieldEditors}
                 </div>
-                <button className="save">Save</button>
+                <button
+                    className="save"
+                    disabled={disabled}
+                    onClick={this.save.bind(this)}>
+                    Save
+                </button>
             </div>
         );
     }
