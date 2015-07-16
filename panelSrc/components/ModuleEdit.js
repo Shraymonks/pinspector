@@ -5,26 +5,42 @@ import {renderWithNewFields} from '../EvalUtils';
 
 const EDITABLES = ['data', 'resource', 'options', 'extraData'];
 
+var cache = {};
+
 class ModuleEdit extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
+        var module = props.module;
         EDITABLES.forEach((field) => {
-            this.state[field] = props.module ?
-                JSON.stringify(props.module[field], null, 2) : 'no module selected';
+            if (module) {
+                cache[module.cid] = cache[module.cid] || {};
+                this.state[field] =
+                    cache[module.cid][field] || this._fieldValue(props, field);
+            } else {
+                this.state[field] = 'no module selected';
+            }
         });
     }
 
     componentWillReceiveProps(props) {
+        var module = props.module;
         EDITABLES.forEach((field) => {
-            this.setState({[field]: props.module ?
-                JSON.stringify(props.module[field], null, 2) : 'no module selected'
-            });
+            if (module) {
+                cache[module.cid] = cache[module.cid] || {};
+                this.setState({[field]:
+                    cache[module.cid][field] || this._fieldValue(props, field)});
+            } else {
+                this.setState({[field]: 'no module selected'});
+            }
         });
     }
 
     onChange(field) {
         return (nextValue) => {
+            var module = this.props.module;
+            cache[module.cid][field] = nextValue;
+
             var parse_msg;
             try {
                 JSON.parse(nextValue);
@@ -32,10 +48,20 @@ class ModuleEdit extends React.Component {
             } catch (e) {
                 parse_msg = e.message;
             }
+
+            var dirty = !(nextValue === this._fieldValue(this.props, field));
+
             this.setState({
                 [field]: nextValue,
-                [`${field}_parse_msg`]: parse_msg
+                [`${field}_parse_msg`]: parse_msg,
+                [`${field}_is_dirty`]: dirty
             });
+        }
+    }
+
+    _fieldValue(props, field) {
+        if (props.module) {
+            return JSON.stringify(props.module[field], null, 2);
         }
     }
 
@@ -43,6 +69,9 @@ class ModuleEdit extends React.Component {
         var fields = {};
         EDITABLES.forEach((field) => {
             fields[field] = JSON.parse(this.state[field]);
+            this.setState({
+                [`${field}_is_dirty`]: false
+            });
         });
 
         renderWithNewFields(this.props.module.cid, fields);
@@ -70,7 +99,10 @@ class ModuleEdit extends React.Component {
             ) : null;
             return (
                 <div className="field-group">
-                    <label>{field}</label>
+                    <label>
+                        {field}
+                        {this.state[`${field}_is_dirty`] ? '*' : ''}
+                    </label>
                     <Codemirror
                         value={this.state[field]}
                         onChange={this.onChange(field)}
