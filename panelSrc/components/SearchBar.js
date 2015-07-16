@@ -1,9 +1,13 @@
 import React from 'react';
 
 class SearchBar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { matchcount: 0 };
+    constructor() {
+        super();
+        this.state = {
+            matchcount: 0,
+            curmatch: 0,
+            matchednodes: []
+        };
     }
 
     debounce(func, wait) {
@@ -20,27 +24,70 @@ class SearchBar extends React.Component {
         };
     }
 
+    jumpNext() {
+        var next = this.state.curmatch >= this.state.matchcount ? 1 : this.state.curmatch + 1;
+        this.setState({
+            curmatch: next
+        });
+        this.state.matchednodes[this.state.curmatch - 1].scrollIntoView();
+    }
+
+    jumpPrev() {
+        var prev = this.state.curmatch > 1 ? this.state.curmatch - 1 : this.state.matchcount;
+        this.setState({
+            curmatch: prev
+        });
+        this.state.matchednodes[this.state.curmatch - 1].scrollIntoView();
+    }
+
     onKeyUp(evt) {
         if (this.props.root.length <= 0) {
             return;
         }
 
-        var query = new RegExp("(" + evt.target.value + ")", "gim");
+        var nodes = this.state.matchednodes;
+        var charCode = (typeof evt.which === "number") ? evt.which : evt.keyCode;
+        if (charCode === 13) { // enter key
+            this.jumpNext();
+        } else {
+            nodes = [];
+        }
 
-        var matches = 0;
-        for (var i = 0; i < this.props.root.length; i++) {
-            let el = this.props.root[i];
-            let e = el.innerHTML;
+        if (evt.target.value === '') {
+            this.setState({
+                matchcount: 0,
+                curmatch: 0,
+                matchednodes: []
+            });
+        } else if (nodes.length <= 0) {
+            var query = new RegExp("(" + evt.target.value + ")", "gim");
+            var matches = 0;
 
-            let match = e.match(query);
-            matches += match ? match.length : 0;
+            for (var i = 0; i < this.props.root.length; i++) {
+                let el = this.props.root[i];
+                let e = el.innerHTML;
 
-            let en = e.replace(/(<em>|<\/em>)/igm, "");
-            let ne = en.replace(query, `<em>$1</em>`);
-            this.props.root[i].innerHTML = ne;
-        };
+                let match = e.match(query);
+                let nm = match ? match.length : 0;
 
-        this.setState({ matchcount: matches });
+                for (var j = 0; j < nm; j++) {
+                   nodes.push(el);
+                }
+
+                matches += nm;
+
+                let en = e.replace(/(<em>|<\/em>)/igm, "");
+                let ne = en.replace(query, `<em>$1</em>`);
+                this.props.root[i].innerHTML = ne;
+            };
+
+            this.setState({
+                matchcount: matches,
+                matchednodes: nodes
+            });
+
+            this.setState({ curmatch: 1 });
+        }
     }
 
     render() {
@@ -50,14 +97,15 @@ class SearchBar extends React.Component {
                     <input
                         id="search-input"
                         placeholder="Find"
-                        onKeyUp={this.debounce(this.onKeyUp.bind(this), 100)}
+                        autoFocus
+                        onKeyUp={this.debounce(this.onKeyUp.bind(this), 50)}
                     />
                     <label id="search-matches" for="search-input">
-                        1 of {this.state.matchcount}
+                        {this.state.curmatch} of {this.state.matchcount}
                     </label>
                     <div className="search-nav-controls">
-                        <div className="search-nav search-nav-prev"></div>
-                        <div className="search-nav search-nav-next"></div>
+                        <div className="search-nav search-nav-prev" onClick={this.jumpPrev.bind(this)}></div>
+                        <div className="search-nav search-nav-next" onClick={this.jumpNext.bind(this)}></div>
                     </div>
                 </span>
             </div>
