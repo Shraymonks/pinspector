@@ -74,7 +74,7 @@ function createOverlay() {
 createOverlay();
 
 function addAppChangeListener() {
-    var target = document.querySelector('.App');
+    var target = document.body;
     var config = {
         childList: true,
         subtree: true
