@@ -7,10 +7,12 @@ import ModuleDescriptor from './ModuleDescriptor';
 
 var CSSTransitionGroup = React.addons.CSSTransitionGroup;
 
+const COLLAPSED = ['Pin', 'Board'];
+
 class ModuleTree extends ModelDependentComponent {
     constructor(props) {
         super(props, 'selectedModule');
-        this.state.collapsed = false;
+        this.state.collapsed = props.module && COLLAPSED.indexOf(props.module.name) !== -1;
     }
 
     componentDidUpdate() {
@@ -49,6 +51,7 @@ class ModuleTree extends ModelDependentComponent {
 
     onClick() {
         Model.selectedModule = this.props.module;
+        this.setState({ collapsed: false });
         this.props.handleAction();
     }
 

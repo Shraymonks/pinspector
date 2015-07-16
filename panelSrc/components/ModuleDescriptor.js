@@ -13,6 +13,11 @@ class ModuleDescriptor extends React.Component {
             return (
                 <img className="desc-img" src={src} />
             );
+        } else if (module.name === 'Board') {
+            let src = module.data.image_thumbnail_url;
+            return (
+                <img className="desc-img" src={src} />
+            )
         }
 
         var {text, alt} = this.props.module.options;
