@@ -72,3 +72,18 @@ function createOverlay() {
     document.body.appendChild(overlay);
 }
 createOverlay();
+
+function addAppChangeListener() {
+    var target = document.body;
+    var config = {
+        childList: true,
+        subtree: true
+    };
+
+    var observer = new MutationObserver(function(mutations) {
+        chrome.runtime.sendMessage('update');
+    });
+
+    observer.observe(target, config);
+}
+addAppChangeListener();

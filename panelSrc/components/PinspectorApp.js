@@ -90,6 +90,24 @@ function updateModel(options) {
     Model.user = options.user;
 }
 
+function initBackgroundConnection() {
+    const backgroundPageConnection = chrome.runtime.connect({
+        name: "panel"
+    });
+
+    let debounce;
+
+    backgroundPageConnection.postMessage({
+        name: 'init',
+        tabId: chrome.devtools.inspectedWindow.tabId
+    });
+
+    backgroundPageConnection.onMessage.addListener((message) => {
+        clearTimeout(debounce);
+        debounce = setTimeout(initialize, 50);
+    });
+}
+
 function initialize() {
     constructModuleTree(updateModel);
 }
@@ -105,11 +123,8 @@ React.render(
  * as SPA route changes. Debounce the resource added otherwise it will
  * be fired like 100+ times...
  */
-// var debounced = null;
-// chrome.devtools.inspectedWindow.onResourceAdded.addListener(function() {
-//     clearTimeout(debounced);
-//     debounced = setTimeout(initialize, 50);
-// });
+
 initialize();
+initBackgroundConnection();
 
 export default PinspectorApp;

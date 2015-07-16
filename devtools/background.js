@@ -1,46 +1,46 @@
-var panels = chrome.devtools.panels;
+var connections = {};
 
-/* 
- * Keep this function flat because we call .toString() on it below. Cannot
- * reference any other functions
- */
-function getPanelContents() {
-    if (window.P && $0) {
-        var app = window.P.app;
-        var module, element;
+chrome.runtime.onConnect.addListener(function (port) {
+    var extensionListener = function (message, sender, sendResponse) {
+        // The original connection event doesn't include the tab ID of the
+        // DevTools page, so we need to send it explicitly.
+        if (message.name == "init") {
+            connections[message.tabId] = port;
+            return;
+        }
 
-        // Find first module
-        while (!module) {
-            element = element ? element.parentNode : $0;
-            if (element === document.body) {
-                module = {};
-            } else {
-                module = app._getDescendantByElement(element);
+        // other message handling
+    }
+
+    // Listen to messages sent from the DevTools page
+    port.onMessage.addListener(extensionListener);
+
+    port.onDisconnect.addListener(function(port) {
+        port.onMessage.removeListener(extensionListener);
+
+        var tabs = Object.keys(connections);
+        for (var i=0, len=tabs.length; i < len; i++) {
+            if (connections[tabs[i]] == port) {
+                delete connections[tabs[i]]
+                break;
             }
         }
-        // window.pinmod = module;
-
-        // Shallow copy contents
-        var contents = {};
-        Object.keys(module).forEach(function(key) {
-            contents[key] = module[key];
-        });
-        // Add a readable name from prototype className
-        contents.$$Module = module.className;
-        return contents;
-    } else {
-        return {};
-    }
-}
-
-panels.elements.createSidebarPane("Module", function (sidebar) {
-    panels.elements.onSelectionChanged.addListener(function updateElementProperties() {
-        sidebar.setExpression("(" + getPanelContents.toString() + ")()");
     });
 });
 
-panels.create("Pinspector", "img/angular.png", "panelDist/index.html", function(panel) {
-    panel.onShown.addListener(function(panelWindow) {
-        panelWindow.dispatchEvent(new Event('shown'));
-    });
+// Receive message from content script and relay to the devTools page for the
+// current tab
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    // Messages from content scripts should have sender.tab set
+    if (sender.tab) {
+        var tabId = sender.tab.id;
+        if (tabId in connections) {
+            connections[tabId].postMessage(request);
+        } else {
+            console.log("Tab not found in connection list.");
+        }
+    } else {
+        console.log("sender.tab not defined.");
+    }
+    return true;
 });
