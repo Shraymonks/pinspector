@@ -90,39 +90,22 @@ function updateModel(options) {
     Model.user = options.user;
 }
 
-function listenForChanges() {
-    chrome.runtime.onConnect.addListener(function(port) {
-      console.log('got port', port);
-      port.onMessage.addListener(function(msg) {
-          console.log('got message in PinspectorApp: ', msg);
-        if (msg.joke == "Knock knock")
-          port.postMessage({question: "Who's there?"});
-        else if (msg.answer == "Madame")
-          port.postMessage({question: "Madame who?"});
-        else if (msg.answer == "Madame... Bovary")
-          port.postMessage({question: "I don't get it."});
-      });
+function initBackgroundConnection() {
+    const backgroundPageConnection = chrome.runtime.connect({
+        name: "panel"
     });
-    // chrome.runtime.onMessageExternal.addListener(
-    //     function(request, sender, sendResponse) {
-    //         console.log(request);
-    //         sendResponse({farewell: 'goodbye'});
-    //     });
 
-    console.log('runtime_id: ', chrome.runtime.id);
-    chrome.devtools.inspectedWindow.eval(`
-        var port = chrome.runtime.connect('${chrome.runtime.id}');
-        console.log('posting message');
-        port.postMessage({joke: "Knock knock"});
-        port.onMessage.addListener(function(msg) {
-          if (msg.question == "Who's there?")
-            port.postMessage({answer: "Madame"});
-          else if (msg.question == "Madame who?")
-            port.postMessage({answer: "Madame... Bovary"});
-        });
-    `, function(response) {
-        console.log('eval response: ', response);
-    })
+    let debounce;
+
+    backgroundPageConnection.postMessage({
+        name: 'init',
+        tabId: chrome.devtools.inspectedWindow.tabId
+    });
+
+    backgroundPageConnection.onMessage.addListener((message) => {
+        clearTimeout(debounce);
+        debounce = setTimeout(initialize, 50);
+    });
 }
 
 function initialize() {
@@ -140,13 +123,8 @@ React.render(
  * as SPA route changes. Debounce the resource added otherwise it will
  * be fired like 100+ times...
  */
-// var debounced = null;
-// chrome.devtools.inspectedWindow.onResourceAdded.addListener(function() {
-//     clearTimeout(debounced);
-//     debounced = setTimeout(initialize, 50);
-// });
-initialize();
 
-listenForChanges();
+initialize();
+initBackgroundConnection();
 
 export default PinspectorApp;
