@@ -41,10 +41,6 @@ class SearchBar extends React.Component {
     }
 
     onKeyUp(evt) {
-        if (this.props.root.length <= 0) {
-            return;
-        }
-
         var nodes = this.state.matchednodes;
         var charCode = (typeof evt.which === "number") ? evt.which : evt.keyCode;
         if (charCode === 13) { // enter key
@@ -59,13 +55,16 @@ class SearchBar extends React.Component {
                 curmatch: 0,
                 matchednodes: []
             });
+            Array.from(this.props.root).forEach((element) => {
+                element.innerHTML = element.innerHTML.replace(/(<em>|<\/em>)/igm, "");
+            });
         } else if (nodes.length <= 0) {
             var query = new RegExp("(" + evt.target.value + ")", "gim");
             var matches = 0;
 
             for (var i = 0; i < this.props.root.length; i++) {
                 let el = this.props.root[i];
-                let e = el.innerHTML;
+                let e = el.innerHTML.replace(/(<em>|<\/em>)/igm, "");
 
                 let match = e.match(query);
                 let nm = match ? match.length : 0;
@@ -76,17 +75,17 @@ class SearchBar extends React.Component {
 
                 matches += nm;
 
-                let en = e.replace(/(<em>|<\/em>)/igm, "");
-                let ne = en.replace(query, `<em>$1</em>`);
+                let ne = e.replace(query, `<em>$1</em>`);
                 this.props.root[i].innerHTML = ne;
             };
 
+            nodes[0].scrollIntoView();
+
             this.setState({
+                curmatch: 1,
                 matchcount: matches,
                 matchednodes: nodes
             });
-
-            this.setState({ curmatch: 1 });
         }
     }
 
