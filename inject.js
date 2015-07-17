@@ -11,8 +11,8 @@ function setSelectedElement(cid, select) {
         if (element) {
             var style = getComputedStyle(element);
             var box = element.getBoundingClientRect();
-            overlay.style.left = box.left + 'px';
-            overlay.style.top = box.top + 'px';
+            overlay.style.left = box.left + document.body.scrollLeft + 'px';
+            overlay.style.top = box.top + document.body.scrollTop + 'px';
             overlay.style.width = box.right - box.left + 'px';
             overlay.style.height = box.bottom - box.top + 'px';
             overlay.style.borderRadius = style['border-radius'];
