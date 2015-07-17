@@ -33,14 +33,18 @@ function getPanelContents() {
     }
 }
 
-panels.elements.createSidebarPane("Module", function (sidebar) {
-    panels.elements.onSelectionChanged.addListener(function updateElementProperties() {
-        sidebar.setExpression("(" + getPanelContents.toString() + ")()");
-    });
-});
+chrome.devtools.inspectedWindow.eval('location.hostname', function(hostname) {
+    if (hostname.includes('.pinterdev.com') || hostname.includes('.pinterest.com')) {
+        panels.elements.createSidebarPane("Module", function (sidebar) {
+            panels.elements.onSelectionChanged.addListener(function updateElementProperties() {
+                sidebar.setExpression("(" + getPanelContents.toString() + ")()");
+            });
+        });
 
-panels.create("Pinspector", "img/angular.png", "panelDist/index.html", function(panel) {
-    panel.onShown.addListener(function(panelWindow) {
-        panelWindow.dispatchEvent(new Event('shown'));
-    });
+        panels.create("Pinspector", "img/angular.png", "panelDist/index.html", function(panel) {
+            panel.onShown.addListener(function(panelWindow) {
+                panelWindow.dispatchEvent(new Event('shown'));
+            });
+        });
+    }
 });
