@@ -33,6 +33,7 @@ function constructModuleTree(callback) {
         return {
             module: module,
             moduleMap: moduleMap,
+            context: P.CONTEXT,
             user: P.currentUser
         }
     })(P)`, callback);

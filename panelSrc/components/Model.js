@@ -5,6 +5,7 @@ class Model {
         this._rootModule = null;
         this._selectedModule = null;
         this._user = null;
+        this._context = null;
         this._subscribers = new Set();
     }
 
@@ -41,6 +42,15 @@ class Model {
 
     set user(user) {
         this._user = user;
+        this._notify();
+    }
+
+    get context() {
+        return this._context;
+    }
+
+    set context(context) {
+        this._context = context;
         this._notify();
     }
 
