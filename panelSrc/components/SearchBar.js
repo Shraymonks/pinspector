@@ -4,9 +4,10 @@ class SearchBar extends React.Component {
     constructor() {
         super();
         this.state = {
-            matchcount: 0,
             curmatch: 0,
-            matchednodes: []
+            matchcount: 0,
+            matchednodes: [],
+            searchText: ''
         };
     }
 
@@ -40,16 +41,22 @@ class SearchBar extends React.Component {
         this.state.matchednodes[this.state.curmatch - 1].scrollIntoView();
     }
 
-    onKeyUp(evt) {
+    onKeyUp({keyCode, target, which}) {
         var nodes = this.state.matchednodes;
-        var charCode = (typeof evt.which === "number") ? evt.which : evt.keyCode;
+        var charCode = (typeof which === "number") ? which : keyCode;
         if (charCode === 13) { // enter key
             this.jumpNext();
         } else {
             nodes = [];
         }
 
-        if (evt.target.value === '') {
+        if (target.value === this.state.searchText) {
+            return;
+        }
+
+        this.setState({searchText: target.value});
+
+        if (target.value === '') {
             this.setState({
                 matchcount: 0,
                 curmatch: 0,
@@ -59,7 +66,7 @@ class SearchBar extends React.Component {
                 element.innerHTML = element.innerHTML.replace(/(<em>|<\/em>)/igm, "");
             });
         } else if (nodes.length <= 0) {
-            var query = new RegExp("(" + evt.target.value + ")", "gim");
+            var query = new RegExp("(" + target.value + ")", "gim");
             var matches = 0;
 
             for (var i = 0; i < this.props.root.length; i++) {
