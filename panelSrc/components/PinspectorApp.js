@@ -78,7 +78,7 @@ class PinspectorApp extends ModelDependentComponent {
                         </div>
                     }
                 />
-                <SearchBar root={document.querySelectorAll(".parent")}/>
+                <SearchBar root={document.querySelectorAll(".parent span")}/>
             </div>
         );
     }
