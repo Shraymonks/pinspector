@@ -1,18 +1,21 @@
-import CollapseButton from './CollapseButton';
 import React from 'react/addons';
+import {default as cx} from 'classnames';
 
+import CollapseButton from './CollapseButton';
 import Model from './Model';
 import ModelDependentComponent from './ModelDependentComponent';
 import ModuleDescriptor from './ModuleDescriptor';
 
-var CSSTransitionGroup = React.addons.CSSTransitionGroup;
+import 'babel/polyfill';
+
+const CSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 const COLLAPSED = ['Pin', 'Board'];
 
 class ModuleTree extends ModelDependentComponent {
     constructor(props) {
         super(props, 'selectedModule');
-        this.state.collapsed = props.module && COLLAPSED.indexOf(props.module.name) !== -1;
+        this.state.collapsed = props.module && COLLAPSED.includes(props.module.name);
     }
 
     componentDidUpdate() {
@@ -42,8 +45,8 @@ class ModuleTree extends ModelDependentComponent {
     }
 
     toggleSelected(focused) {
-        var cid = this.props.module.cid;
-        var fn = 'setSelectedElement(\'' + cid + '\',' + focused + ')';
+        const cid = this.props.module.cid;
+        const fn = `setSelectedElement('${cid}', ${focused})`;
         chrome.devtools.inspectedWindow.eval(fn, {
             useContentScriptContext: true
         });
@@ -55,56 +58,69 @@ class ModuleTree extends ModelDependentComponent {
         this.props.handleAction();
     }
 
-    render() {
+    renderCollapseButton() {
+        if (this.props.module.children.length > 0) {
+            return (
+                <CollapseButton
+                    collapsed={this.state.collapsed}
+                    click={this.clickCollapse.bind(this)}
+                />
+            );
+        }
+    }
+
+    renderChildren() {
+        const childClasses = cx({
+            children: true,
+            expanded: !this.state.collapsed
+        });
+
+        return (
+            <ol className={childClasses}>
+                <CSSTransitionGroup transitionName="module-tree">
+                    {this.props.module.children.map((child, i) => (
+                        <ModuleTree
+                            {...this.props}
+                            module={child}
+                            key={`${module.name}-${i}-${child.name}`}
+                        />
+                    ))}
+                </CSSTransitionGroup>
+            </ol>
+        );
+    }
+
+    renderModule() {
         const {module} = this.props;
         const {selectedModule} = this.state;
-        if (!module) {
+
+        const parentClasses = cx({
+            parent: true,
+            selected: module.cid === (selectedModule && selectedModule.cid)
+        });
+
+        return (
+            <div className={parentClasses}
+                 onClick={this.onClick.bind(this)}
+                 onMouseEnter={this.onMouseEnter.bind(this)}
+                 onMouseLeave={this.onMouseLeave.bind(this)}
+                 ref="module">
+                {module.name}
+                <ModuleDescriptor module={module} />
+            </div>
+        );
+    }
+
+    render() {
+        if (!this.props.module) {
             return null;
         }
 
-        var parentClassName = 'parent';
-        var selected = module.cid === (selectedModule && selectedModule.cid);
-        if (selected) {
-            parentClassName += ' selected';
-        }
-
-        var hasChildren = module.children.length > 0;
-        var collapseButton = hasChildren ? (
-            <CollapseButton
-                collapsed={this.state.collapsed}
-                click={this.clickCollapse.bind(this)} />
-        ) : null;
-
-        var childrenClassName = 'children';
-        if (!this.state.collapsed) {
-            childrenClassName += ' expanded';
-        }
-
-        var children = module.children.map(
-            (child, i) => (
-                <ModuleTree
-                    {...this.props}
-                    module={child}
-                    key={`${module.name}-${i}-${child.name}`}
-                />
-        ));
-
         return (
             <li>
-                {collapseButton}
-                <div className={parentClassName}
-                     onClick={this.onClick.bind(this)}
-                     onMouseEnter={this.onMouseEnter.bind(this)}
-                     onMouseLeave={this.onMouseLeave.bind(this)}
-                     ref="module">
-                    {module.name}
-                    <ModuleDescriptor module={module} />
-                </div>
-                <ol className={childrenClassName}>
-                    <CSSTransitionGroup transitionName="module-tree">
-                        {children}
-                    </CSSTransitionGroup>
-                </ol>
+                {this.renderCollapseButton()}
+                {this.renderModule()}
+                {this.renderChildren()}
             </li>
         );
     }
