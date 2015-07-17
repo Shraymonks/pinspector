@@ -14,16 +14,17 @@ import '../styles/main.css';
 
 class PinspectorApp extends ModelDependentComponent {
     constructor(props) {
-        super(props, 'moduleMap', 'rootModule', 'selectedModule', 'user');
+        super(props, 'moduleMap', 'rootModule', 'selectedModule', 'user', 'context');
 
         this.handleTreeAction = this.handleTreeAction.bind(this);
         this.selectModuleFromElement = this.selectModuleFromElement.bind(this);
     }
 
-    selectUser() {
+    selectOther(name) {
         Model.selectedModule = {
-            name: 'User',
-            data: this.state.user,
+            cid: `gangsta.${name}`,
+            name: name,
+            data: this.state[name.toLowerCase()],
             resource: null,
             options: null,
             extraData: null
@@ -60,8 +61,11 @@ class PinspectorApp extends ModelDependentComponent {
                 <SplitPane
                     leftPane={
                         <div className="modules">
-                            <div className="parent user" onClick={this.selectUser.bind(this)}>
+                            <div className="parent user" onClick={this.selectOther.bind(this, 'User')}>
                                 User
+                            </div>
+                            <div className="parent context" onClick={this.selectOther.bind(this, 'Context')}>
+                                Context
                             </div>
                             <ol className="module-tree">
                                 <ModuleTree
@@ -88,6 +92,7 @@ function updateModel(options) {
     Model.moduleMap = options.moduleMap;
     Model.rootModule = options.module;
     Model.user = options.user;
+    Model.context = options.context;
 }
 
 function initBackgroundConnection() {
