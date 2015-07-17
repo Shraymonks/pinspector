@@ -104,8 +104,8 @@ class SearchBar extends React.Component {
                         {this.state.curmatch} of {this.state.matchcount}
                     </label>
                     <div className="search-nav-controls">
-                        <div className="search-nav search-nav-prev" onClick={this.jumpPrev.bind(this)}></div>
-                        <div className="search-nav search-nav-next" onClick={this.jumpNext.bind(this)}></div>
+                        <div className="search-nav search-nav-prev" onClick={this.jumpPrev.bind(this)}>▲</div>
+                        <div className="search-nav search-nav-next" onClick={this.jumpNext.bind(this)}>▼</div>
                     </div>
                 </span>
             </div>
