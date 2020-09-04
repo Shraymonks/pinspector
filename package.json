@@ -11,7 +11,7 @@
   "mainOutput": "main",
   "dependencies": {
     "normalize.css": "~3.0.3",
-    "react": "0.13.x",
+    "react": "16.13.x",
     "react-codemirror": "git://github.com/bradencanderson/react-codemirror.git#master"
   },
   "devDependencies": {
